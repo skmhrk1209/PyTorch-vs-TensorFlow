@@ -134,8 +134,8 @@ if __name__ == "__main__":
 
     begin = time.time()
 
-    train(args, model, device, train_loader, optimizer, 10)
-    test(args, model, device, test_loader, 1)
+    train(model, device, train_loader, optimizer, 10)
+    test(model, device, test_loader, 1)
 
     end = time.time()
 
