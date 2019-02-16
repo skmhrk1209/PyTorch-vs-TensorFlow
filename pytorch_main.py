@@ -122,7 +122,7 @@ if __name__ == "__main__":
                 transforms.Normalize((0.1307,), (0.3081,))
             ])),
         batch_size=100,
-        shuffle=True,
+        shuffle=False,
         **kwargs
     )
 
