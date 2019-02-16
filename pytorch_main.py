@@ -14,7 +14,7 @@ class ConvNet(nn.Module):
             out_channels=32,
             kernel_size=(5, 5),
             stride=(1, 1),
-            padding=(4, 4)
+            padding=(2, 2)
         )
         self.pool1 = nn.MaxPool2d(
             kernel_size=(2, 2),
@@ -26,7 +26,7 @@ class ConvNet(nn.Module):
             out_channels=64,
             kernel_size=(5, 5),
             stride=(1, 1),
-            padding=(4, 4)
+            padding=(2, 2)
         )
         self.pool2 = nn.MaxPool2d(
             kernel_size=(2, 2),
@@ -43,7 +43,6 @@ class ConvNet(nn.Module):
         )
 
     def forward(self, x):
-        print(x.shape)
         x = self.conv1(x)
         x = nn.functional.relu(x)
         x = self.pool1(x)
