@@ -63,35 +63,35 @@ class ConvNet(nn.Module):
 def train(model, device, train_loader, optimizer, epochs):
     model.train()
     for epoch in range(epochs):
-        for batch_idx, (data, target) in enumerate(train_loader):
-            data, target = data.to(device), target.to(device)
+        for step, (images, labels) in enumerate(train_loader):
+            images, labels = images.to(device), labels.to(device)
             optimizer.zero_grad()
-            output = model(data)
-            loss = nn.functional.nll_loss(output, target)
+            logits = model(images)
+            loss = nn.functional.nll_loss(logits, labels)
             loss.backward()
             optimizer.step()
-            if batch_idx % 100 == 0:
+            if step % 100 == 0:
                 print("Train: Epoch: {}[{}/{}], Loss: {:.6f}".format(
-                    epoch, batch_idx * len(data), len(train_loader.dataset), loss.item()
+                    epoch, step * len(images), len(train_loader.dataset), loss.item()
                 ))
-                if batch_idx % 1000 == 0:
+                if step % 1000 == 0:
                     torch.save(model.state_dict(), "mnist_convnet_model.pt")
 
 
 def test(model, device, test_loader):
     model.eval()
-    test_loss = 0
+    loss = 0
     correct = 0
     with torch.no_grad():
-        for data, target in test_loader:
-            data, target = data.to(device), target.to(device)
-            output = model(data)
-            test_loss += nn.functional.nll_loss(output, target, reduction='sum').item()
-            pred = output.argmax(dim=1, keepdim=True)
-            correct += pred.eq(target.view_as(pred)).sum().item()
-    test_loss /= len(test_loader.dataset)
+        for images, labels in test_loader:
+            images, labels = images.to(device), labels.to(device)
+            logits = model(images)
+            loss += nn.functional.nll_loss(logits, labels, reduction="sum").item()
+            predictions = logits.argmax(1)
+            correct += predictions.eq(labels).sum().item()
+    loss /= len(test_loader.dataset)
     print("Test: Average loss: {:.6f}, Accuracy: {:.2f}%".format(
-        test_loss, 100. * correct / len(test_loader.dataset)
+        loss, correct / len(test_loader.dataset) * 100.
     ))
 
 
