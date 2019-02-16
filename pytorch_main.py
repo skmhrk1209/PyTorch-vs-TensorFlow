@@ -132,7 +132,7 @@ if __name__ == "__main__":
     begin = time.time()
 
     train(model, device, train_loader, optimizer, 10)
-    test(model, device, test_loader, 1)
+    test(model, device, test_loader)
 
     end = time.time()
 
