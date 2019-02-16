@@ -42,19 +42,19 @@ class ConvNet(nn.Module):
             out_features=10
         )
 
-    def forward(self, x):
-        x = self.conv1(x)
-        x = nn.functional.relu(x)
-        x = self.pool1(x)
-        x = self.conv2(x)
-        x = nn.functional.relu(x)
-        x = self.pool2(x)
-        x = x.view(-1, 7 * 7 * 64)
-        x = self.fc1(x)
-        x = nn.functional.relu(x)
-        x = self.fc2(x)
-        x = nn.functional.log_softmax(x, dim=1)
-        return x
+    def forward(self, inputs):
+        inputs = self.conv1(inputs)
+        inputs = nn.functional.relu(inputs)
+        inputs = self.pool1(inputs)
+        inputs = self.conv2(inputs)
+        inputs = nn.functional.relu(inputs)
+        inputs = self.pool2(inputs)
+        inputs = inputs.view(inputs.size()[0], -1)
+        inputs = self.fc1(inputs)
+        inputs = nn.functional.relu(inputs)
+        inputs = self.fc2(inputs)
+        inputs = nn.functional.log_softmax(inputs, dim=1)
+        return inputs
 
 
 def train(model, device, train_loader, optimizer, epochs):
