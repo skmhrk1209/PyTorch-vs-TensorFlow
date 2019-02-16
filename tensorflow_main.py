@@ -9,7 +9,7 @@ tf.logging.set_verbosity(tf.logging.INFO)
 def conv_net(features, labels, mode):
 
     inputs = tf.reshape(
-        tensor=features["x"],
+        tensor=features["images"],
         shape=[-1, 28, 28, 1]
     )
     inputs = tf.layers.conv2d(
@@ -97,14 +97,14 @@ if __name__ == "__main__":
         )
     )
     train_input_fn = tf.estimator.inputs.numpy_input_fn(
-        x={"x": train_data},
+        x={"images": train_data},
         y=train_labels,
         batch_size=100,
         num_epochs=10,
         shuffle=True
     )
     eval_input_fn = tf.estimator.inputs.numpy_input_fn(
-        x={"x": eval_data},
+        x={"images": eval_data},
         y=eval_labels,
         batch_size=100,
         num_epochs=1,
