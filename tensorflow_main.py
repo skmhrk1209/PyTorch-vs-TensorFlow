@@ -60,13 +60,13 @@ def conv_net(features, labels, mode):
     # Flatten tensor into a batch of vectors
     # Input Tensor Shape: [batch_size, 7, 7, 64]
     # Output Tensor Shape: [batch_size, 7 * 7 * 64]
-    pool2_flat = tf.layers.flatten(pool2)
+    pool2 = tf.layers.flatten(pool2)
     # Dense Layer
     # Densely connected layer with 1024 neurons
     # Input Tensor Shape: [batch_size, 7 * 7 * 64]
     # Output Tensor Shape: [batch_size, 1024]
     dense = tf.layers.dense(
-        inputs=pool2_flat,
+        inputs=pool2,
         units=1024,
         activation=tf.nn.relu
     )
@@ -74,7 +74,7 @@ def conv_net(features, labels, mode):
     # Input Tensor Shape: [batch_size, 1024]
     # Output Tensor Shape: [batch_size, 10]
     logits = tf.layers.dense(
-        inputs=dropout,
+        inputs=dense,
         units=10
     )
     predictions = {
