@@ -1,5 +1,6 @@
 import tensorflow as tf
 import numpy as np
+import time
 
 
 tf.logging.set_verbosity(tf.logging.INFO)
