@@ -8,6 +8,7 @@ from torchvision import datasets, transforms
 class ConvNet(nn.Module):
 
     def __init__(self):
+
         super().__init__()
         self.conv1 = nn.Conv2d(
             in_channels=1,
@@ -43,6 +44,7 @@ class ConvNet(nn.Module):
         )
 
     def forward(self, inputs):
+
         inputs = self.conv1(inputs)
         inputs = nn.functional.relu(inputs)
         inputs = self.pool1(inputs)
@@ -54,6 +56,7 @@ class ConvNet(nn.Module):
         inputs = nn.functional.relu(inputs)
         inputs = self.fc2(inputs)
         inputs = nn.functional.log_softmax(inputs, dim=1)
+
         return inputs
 
 
@@ -68,7 +71,7 @@ def train(model, device, train_loader, optimizer, epochs):
             loss.backward()
             optimizer.step()
             if batch_idx % 100 == 0:
-                print('Train Epoch: {}[{}/{}], Loss: {:.6f}'.format(
+                print("Train: Epoch: {}[{}/{}], Loss: {:.6f}".format(
                     epoch, batch_idx * len(data), len(train_loader.dataset), loss.item()
                 ))
                 if batch_idx % 1000 == 0:
@@ -87,16 +90,12 @@ def test(model, device, test_loader):
             pred = output.argmax(dim=1, keepdim=True)
             correct += pred.eq(target.view_as(pred)).sum().item()
     test_loss /= len(test_loader.dataset)
-    print("Test set: Average loss: {:.6f}, Accuracy: {:.2f}%".format(
+    print("Test: Average loss: {:.6f}, Accuracy: {:.2f}%".format(
         test_loss, 100. * correct / len(test_loader.dataset)
     ))
 
 
 if __name__ == "__main__":
-
-    use_cuda = torch.cuda.is_available()
-    device = torch.device("cuda" if use_cuda else "cpu")
-    kwargs = {"num_workers": 1, "pin_memory": True} if use_cuda else {}
 
     train_loader = torch.utils.data.DataLoader(
         dataset=datasets.MNIST(
@@ -110,7 +109,8 @@ if __name__ == "__main__":
         ),
         batch_size=100,
         shuffle=True,
-        **kwargs
+        num_workers=1,
+        pin_memory=True
     )
 
     test_loader = torch.utils.data.DataLoader(
@@ -123,17 +123,18 @@ if __name__ == "__main__":
             ])),
         batch_size=100,
         shuffle=False,
-        **kwargs
+        num_workers=1,
+        pin_memory=True
     )
+
+    device = torch.device("cuda")
 
     model = ConvNet().to(device)
     optimizer = optim.Adam(model.parameters())
 
     begin = time.time()
-
     train(model, device, train_loader, optimizer, 10)
     test(model, device, test_loader)
-
     end = time.time()
 
     print("elapsed_time: {}s".format(end - begin))
