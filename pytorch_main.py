@@ -60,10 +60,10 @@ class ConvNet(nn.Module):
         return inputs
 
 
-def train(model, device, train_loader, optimizer, epochs):
+def train(model, device, data_loader, optimizer, epochs):
     model.train()
     for epoch in range(epochs):
-        for step, (images, labels) in enumerate(train_loader):
+        for step, (images, labels) in enumerate(data_loader):
             images, labels = images.to(device), labels.to(device)
             optimizer.zero_grad()
             logits = model(images)
@@ -72,26 +72,26 @@ def train(model, device, train_loader, optimizer, epochs):
             optimizer.step()
             if step % 100 == 0:
                 print("Train: Epoch: {}[{}/{}], Loss: {:.6f}".format(
-                    epoch, step * len(images), len(train_loader.dataset), loss.item()
+                    epoch, step * len(images), len(data_loader.dataset), loss.item()
                 ))
                 if step % 1000 == 0:
                     torch.save(model.state_dict(), "mnist_convnet_model.pt")
 
 
-def test(model, device, test_loader):
+def test(model, device, data_loader):
     model.eval()
     loss = 0
     correct = 0
     with torch.no_grad():
-        for images, labels in test_loader:
+        for images, labels in data_loader:
             images, labels = images.to(device), labels.to(device)
             logits = model(images)
             loss += nn.functional.nll_loss(logits, labels, reduction="sum").item()
             predictions = logits.argmax(1)
             correct += predictions.eq(labels).sum().item()
-    loss /= len(test_loader.dataset)
+    loss /= len(data_loader.dataset)
     print("Test: Average loss: {:.6f}, Accuracy: {:.2f}%".format(
-        loss, correct / len(test_loader.dataset) * 100.
+        loss, correct / len(data_loader.dataset) * 100.
     ))
 
 
