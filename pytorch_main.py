@@ -89,9 +89,8 @@ def test(model, device, data_loader):
             loss += nn.functional.nll_loss(logits, labels, reduction="sum").item()
             predictions = logits.argmax(1)
             correct += predictions.eq(labels).sum().item()
-    loss /= len(data_loader.dataset)
     print("Test: Average loss: {:.6f}, Accuracy: {:.2f}%".format(
-        loss, correct / len(data_loader.dataset) * 100.
+        loss / len(data_loader.dataset), correct / len(data_loader.dataset) * 100.
     ))
 
 
