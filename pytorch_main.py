@@ -43,6 +43,7 @@ class ConvNet(nn.Module):
         )
 
     def forward(self, x):
+        print(x)
         x = self.conv1(x)
         x = nn.functional.relu(x)
         x = self.pool1(x)
