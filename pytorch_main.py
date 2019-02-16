@@ -1,8 +1,7 @@
-from __future__ import print_function
+import time
 import argparse
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 import torch.optim as optim
 from torchvision import datasets, transforms
 
@@ -73,6 +72,8 @@ def train(args, model, device, train_loader, optimizer, epoch):
                 epoch, batch_idx * len(data), len(train_loader.dataset),
                 100. * batch_idx / len(train_loader), loss.item()
             ))
+            if batch_idx % 1000 == 0:
+                torch.save(model.state_dict(), "mnist_convnet_model.pt")
 
 
 def test(args, model, device, test_loader):
@@ -83,8 +84,8 @@ def test(args, model, device, test_loader):
         for data, target in test_loader:
             data, target = data.to(device), target.to(device)
             output = model(data)
-            test_loss += nn.functional.nll_loss(output, target, reduction='sum').item()  # sum up batch loss
-            pred = output.argmax(dim=1, keepdim=True)  # get the index of the max log-probability
+            test_loss += nn.functional.nll_loss(output, target, reduction='sum').item()
+            pred = output.argmax(dim=1, keepdim=True)
             correct += pred.eq(target.view_as(pred)).sum().item()
     test_loss /= len(test_loader.dataset)
     print('\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(
@@ -130,8 +131,12 @@ if __name__ == "__main__":
     model = ConvNet().to(device)
     optimizer = optim.Adam(model.parameters())
 
+    begin = time.time()
+
     for epoch in range(10):
         train(args, model, device, train_loader, optimizer, epoch)
-        test(args, model, device, test_loader)
+    test(args, model, device, test_loader)
 
-    torch.save(model.state_dict(), "mnist_convnet_model.pt")
+    end = time.time()
+
+    print("elapsed_time: {}s".format(end - begin))

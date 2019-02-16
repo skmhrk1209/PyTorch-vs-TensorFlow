@@ -127,13 +127,12 @@ if __name__ == "__main__":
     # Create the Estimator
     mnist_classifier = tf.estimator.Estimator(
         model_fn=conv_net,
-        model_dir="mnist_convnet_model"
-    )
-    # Set up logging for predictions
-    # Log the values in the "Softmax" tensor with label "probabilities"
-    logging_hook = tf.train.LoggingTensorHook(
-        tensors={"probabilities": "softmax_tensor"},
-        every_n_iter=100
+        model_dir="mnist_convnet_model",
+        config=tf.estimator.RunConfig(
+            save_summary_steps=1000,
+            save_checkpoints_steps=1000,
+            log_step_count_steps=100
+        )
     )
     # Train the model
     train_input_fn = tf.estimator.inputs.numpy_input_fn(
@@ -143,10 +142,6 @@ if __name__ == "__main__":
         num_epochs=10,
         shuffle=True
     )
-    mnist_classifier.train(
-        input_fn=train_input_fn,
-        hooks=[logging_hook]
-    )
     # Evaluate the model and print results
     eval_input_fn = tf.estimator.inputs.numpy_input_fn(
         x={"x": eval_data},
@@ -155,7 +150,17 @@ if __name__ == "__main__":
         num_epochs=1,
         shuffle=False
     )
-    eval_results = mnist_classifier.evaluate(
-        input_fn=eval_input_fn
+
+    begin = time.time()
+
+    mnist_classifier.train(
+        input_fn=train_input_fn,
+        hooks=[logging_hook]
     )
-    print(eval_results)
+    print(mnist_classifier.evaluate(
+        input_fn=eval_input_fn
+    ))
+
+    end = time.time()
+
+    print("elapsed_time: {}s".format(end - begin))
