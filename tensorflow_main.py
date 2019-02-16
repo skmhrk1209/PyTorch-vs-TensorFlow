@@ -154,13 +154,8 @@ if __name__ == "__main__":
 
     begin = time.time()
 
-    mnist_classifier.train(
-        input_fn=train_input_fn,
-        hooks=[logging_hook]
-    )
-    print(mnist_classifier.evaluate(
-        input_fn=eval_input_fn
-    ))
+    mnist_classifier.train(train_input_fn)
+    print(mnist_classifier.evaluate(eval_input_fn))
 
     end = time.time()
 
