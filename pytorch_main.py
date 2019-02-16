@@ -57,7 +57,7 @@ class ConvNet(nn.Module):
         return x
 
 
-def train(args, model, device, train_loader, optimizer, epochs):
+def train(model, device, train_loader, optimizer, epochs):
     model.train()
     for epoch in range(epochs):
         for batch_idx, (data, target) in enumerate(train_loader):
@@ -76,7 +76,7 @@ def train(args, model, device, train_loader, optimizer, epochs):
                     torch.save(model.state_dict(), "mnist_convnet_model.pt")
 
 
-def test(args, model, device, test_loader, epochs):
+def test(model, device, test_loader, epochs):
     model.eval()
     for epoch in range(epochs):
         test_loss = 0
