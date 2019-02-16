@@ -68,7 +68,7 @@ def train(model, device, train_loader, optimizer, epochs):
             loss.backward()
             optimizer.step()
             if batch_idx % 100 == 0:
-                print('Train Epoch: {}[{}/{}]\tLoss: {:.6f}'.format(
+                print('Train Epoch: {}[{}/{}], Loss: {:.6f}'.format(
                     epoch, batch_idx * len(data), len(train_loader.dataset), loss.item()
                 ))
                 if batch_idx % 1000 == 0:
@@ -87,7 +87,7 @@ def test(model, device, test_loader):
             pred = output.argmax(dim=1, keepdim=True)
             correct += pred.eq(target.view_as(pred)).sum().item()
     test_loss /= len(test_loader.dataset)
-    print('\nTest set: Average loss: {:.6f}\tAccuracy: {:.2f}%\n'.format(
+    print("Test set: Average loss: {:.6f}, Accuracy: {:.2f}%".format(
         test_loss, 100. * correct / len(test_loader.dataset)
     ))
 
